@@ -1,76 +1,47 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
-}
-
-body {
-  background-color: #f4f4f9;
-  color: #333;
-  line-height: 1.6;
-}
-
-header {
-  background-color: #007bff;
-  color: white;
-  text-align: center;
-  padding: 1rem;
-}
-
-header h1 {
-  font-size: 2rem;
-}
-
-main {
-  max-width: 800px;
-  margin: 20px auto;
-  padding: 0 20px;
-}
-
-.rpm-display {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.rpm-display h2 {
-  font-size: 1.5rem;
-  margin-bottom: 10px;
-}
-
-.rpm-display p {
-  font-size: 2rem;
-  font-weight: bold;
-  color: #007bff;
-  background-color: white;
-  padding: 10px;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.chart-container {
-  background-color: white;
-  padding: 20px;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.chart-container h2 {
-  font-size: 1.5rem;
-  margin-bottom: 10px;
-  text-align: center;
-}
-
-@media (max-width: 600px) {
-  header h1 {
-    font-size: 1.5rem;
+// Initialize Chart.js
+const ctx = document.getElementById('rpmChart').getContext('2d');
+const rpmChart = new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: [],
+    datasets: [{
+      label: 'RPM',
+      data: [],
+      borderColor: '#007bff',
+      backgroundColor: 'rgba(0, 123, 255, 0.1)',
+      fill: true,
+      tension: 0.4
+    }]
+  },
+  options: {
+    responsive: true,
+    scales: {
+      x: { title: { display: true, text: 'Time' } },
+      y: { title: { display: true, text: 'RPM' }, beginAtZero: true }
+    }
   }
+});
 
-  .rpm-display p {
-    font-size: 1.5rem;
-  }
+// Fetch RPM data from Glitch
+async function fetchRPM() {
+  try {
+    const response = await fetch('https://exciting-amusing-stork.glitch.me/rpm');
+    const data = await response.json();
 
-  main {
-    padding: 0 10px;
+    // Update current RPM
+    const latestRPM = data.length > 0 ? data[data.length - 1].rpm : 0;
+    document.getElementById('current-rpm').textContent = `${latestRPM} RPM`;
+
+    // Update chart
+    rpmChart.data.labels = data.map(d => new Date(d.timestamp).toLocaleTimeString());
+    rpmChart.data.datasets[0].data = data.map(d => parseFloat(d.rpm));
+    rpmChart.update();
+  } catch (error) {
+    console.error('Error fetching RPM data:', error);
+    document.getElementById('current-rpm').textContent = 'Error';
   }
 }
+
+// Fetch data initially and every 5 seconds
+fetchRPM();
+setInterval(fetchRPM, 5000);
