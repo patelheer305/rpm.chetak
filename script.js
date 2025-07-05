@@ -60,7 +60,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
 
 async function fetchRPM(deviceId) {
   try {
-    const url = https://exciting-amusing-stork.glitch.me/rpm?userId=${userId}&deviceId=${deviceId};
+    const url = 'https://exciting-amusing-stork.glitch.me/rpm?userId=${userId}&deviceId=${deviceId}';
     console.log('Fetching data from: ' + url);
     const response = await fetch(url);
     console.log('Response status:', response.status);
