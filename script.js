@@ -25,8 +25,14 @@ const rpmChart = new Chart(ctx, {
 // Fetch RPM data from Glitch
 async function fetchRPM() {
   try {
-    const response = await fetch('https://exciting-amusing-stork.glitch.me/rpm');
+    console.log('Fetching data from: https://your-project.glitch.me/rpm');
+    const response = await fetch('https://your-project.glitch.me/rpm');
+    console.log('Response status:', response.status);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
     const data = await response.json();
+    console.log('Received data:', data);
 
     // Update current RPM
     const latestRPM = data.length > 0 ? data[data.length - 1].rpm : 0;
