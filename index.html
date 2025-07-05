@@ -7,27 +7,29 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div id="login-container">
+  <header>
     <img src="Chetak.png" alt="Logo" class="logo">
-    <h1>Marshal Chetak</h1>
-    <form id="login-form">
-      <input type="text" id="username" placeholder="Username" required>
-      <input type="password" id="password" placeholder="Password" required>
-      <button type="submit">Login</button>
-    </form>
-  </div>
-  <div id="rpm-container" style="display: none;">
-    <img src="Chetak.png" alt="Logo" class="logo">
-    <h1>Marshal Chetak</h1>
-    <section class="rpm-display">
-      <h2>Current RPM</h2>
-      <p id="current-rpm">Loading...</p>
-    </section>
-    <section class="chart-container">
-      <h2>RPM Trend</h2>
-      <canvas id="rpmChart"></canvas>
-    </section>
-  </div>
+    <h1>मार्शल चेतक</h1>
+  </header>
+  <main>
+    <div id="login-container">
+      <form id="login-form">
+        <input type="text" id="username" placeholder="उपयोगकर्ता नाम" required>
+        <input type="password" id="password" placeholder="पासवर्ड" required>
+        <button type="submit">लॉगिन</button>
+      </form>
+    </div>
+    <div id="rpm-container" style="display: none;">
+      <section class="rpm-display">
+        <h2>वर्तमान RPM</h2>
+        <p id="current-rpm">Loading...</p>
+      </section>
+      <section class="chart-container">
+        <h2>RPM प्रवृत्ति</h2>
+        <canvas id="rpmChart"></canvas>
+      </section>
+    </div>
+  </main>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="script.js"></script>
 </body>
