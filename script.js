@@ -43,43 +43,52 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
     const data = await response.json();
     userId = data.userId;
     deviceId = data.devices[0]; // Single device per farmer
+    console.log('User ID:', userId, 'Device ID:', deviceId);
     document.getElementById('login-container').style.display = 'none';
     document.getElementById('rpm-container').style.display = 'block';
-    fetchRPM(); // Fetch data for the single device
+    fetchRPM();
   } catch (error) {
     console.error('Login error:', error);
-    alert('अमान्य उपयोगकर्ता नाम या पासवर्ड'); // Hindi alert
+    alert('अमान्य उपयोगकर्ता नाम या पासवर्ड');
   }
 });
 
 async function fetchRPM() {
   if (!userId || !deviceId) {
     console.error('No user ID or device ID, please log in');
-    document.getElementById('current-rpm').textContent = 'कृपया लॉगिन करें'; // Hindi message
+    document.getElementById('current-rpm').textContent = 'कृपया लॉगिन करें';
     return;
   }
   try {
     const url = 'https://exciting-amusing-stork.glitch.me/rpm?userId=${userId}&deviceId=${deviceId}';
-    console.log('Fetching data from: ' + url);
+    console.log('Fetching data from:', url);
     const response = await fetch(url);
     console.log('Response status:', response.status);
     if (!response.ok) {
-      throw new Error('HTTP error! Status: ${response.status}');
+      const errorText = await response.text();
+      throw new Error('HTTP error! Status: ${response.status}, Message: ${errorText}');
     }
     const data = await response.json();
     console.log('Received data:', data);
-    const latestRPM = data.length > 0 ? data[data.length - 1].rpm : "0";
+    if (data.length === 0) {
+      console.warn('No RPM data available for this device');
+      document.getElementById('current-rpm').textContent = 'कोई डेटा उपलब्ध नहीं';
+      rpmChart.data.labels = [];
+      rpmChart.data.datasets[0].data = [];
+      rpmChart.update();
+      return;
+    }
+    const latestRPM = data[data.length - 1].rpm;
     document.getElementById('current-rpm').textContent = '${latestRPM} RPM';
     rpmChart.data.labels = data.map(d => '');
     rpmChart.data.datasets[0].data = data.map(d => parseFloat(d.rpm));
     rpmChart.update();
   } catch (error) {
     console.error('Error fetching RPM data:', error);
-    document.getElementById('current-rpm').textContent = 'त्रुटि'; // Hindi error
+    document.getElementById('current-rpm').textContent = 'त्रुटि';
   }
 }
 
-// Periodic update
 setInterval(() => {
   if (userId && deviceId) {
     fetchRPM();
