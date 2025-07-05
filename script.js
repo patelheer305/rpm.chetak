@@ -1,4 +1,3 @@
-// Initialize Chart.js
 const ctx = document.getElementById('rpmChart').getContext('2d');
 const rpmChart = new Chart(ctx, {
   type: 'line',
@@ -7,8 +6,8 @@ const rpmChart = new Chart(ctx, {
     datasets: [{
       label: 'RPM',
       data: [],
-      borderColor: '#007bff',
-      backgroundColor: 'rgba(0, 123, 255, 0.1)',
+      borderColor: '#d70000',
+      backgroundColor: 'rgba(215, 0, 0, 0.1)',
       fill: true,
       tension: 0.4
     }]
@@ -16,8 +15,20 @@ const rpmChart = new Chart(ctx, {
   options: {
     responsive: true,
     scales: {
-      x: { title: { display: true, text: 'Time' } },
-      y: { title: { display: true, text: 'RPM' }, beginAtZero: true }
+      x: { 
+        grid: { display: true, drawBorder: true },
+        ticks: { display: false }, // Hide x-axis tick values
+        title: { display: true, text: 'Time' } // Show "Time" label
+      },
+      y: { 
+        grid: { display: true, drawBorder: true },
+        ticks: { display: false }, // Hide y-axis tick values
+        title: { display: true, text: 'RPM' } // Show "RPM" label
+      }
+    },
+    plugins: {
+      legend: { display: false }, // Hide legend
+      tooltip: { enabled: false } // Disable tooltips
     }
   }
 });
@@ -35,11 +46,11 @@ async function fetchRPM() {
     console.log('Received data:', data);
 
     // Update current RPM
-    const latestRPM = data.length > 0 ? data[data.length - 1].rpm : 0;
+    const latestRPM = data.length > 0 ? data[data.length - 1].rpm :  "0";
     document.getElementById('current-rpm').textContent = `${latestRPM} RPM`;
 
     // Update chart
-    rpmChart.data.labels = data.map(d => new Date(d.timestamp).toLocaleTimeString());
+    rpmChart.data.labels = data.map(d => '');
     rpmChart.data.datasets[0].data = data.map(d => parseFloat(d.rpm));
     rpmChart.update();
   } catch (error) {
