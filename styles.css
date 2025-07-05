@@ -12,10 +12,17 @@ body {
 }
 
 header {
-  background-color: #007bff;
+  background-color: #d70000;
   color: white;
   text-align: center;
   padding: 1rem;
+}
+
+header .logo {
+  display: block;
+  margin: 0 auto 10px;
+  max-width: 150px;
+  height: auto;
 }
 
 header h1 {
@@ -41,7 +48,7 @@ main {
 .rpm-display p {
   font-size: 2rem;
   font-weight: bold;
-  color: #007bff;
+  color: #d70000;
   background-color: white;
   padding: 10px;
   border-radius: 5px;
@@ -49,10 +56,7 @@ main {
 }
 
 .chart-container {
-  background-color: white;
   padding: 20px;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .chart-container h2 {
@@ -64,6 +68,10 @@ main {
 @media (max-width: 600px) {
   header h1 {
     font-size: 1.5rem;
+  }
+
+  header .logo {
+    max-width: 100px;
   }
 
   .rpm-display p {
