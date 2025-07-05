@@ -63,7 +63,7 @@ main {
 }
 
 #login-container button:hover {
-  background-color: #b30000; /* Darker shade of #d70000 */
+  background-color: #b30000;
 }
 
 .rpm-display {
