@@ -1,5 +1,29 @@
+const ctx = document.getElementById('rpmChart').getContext('2d');
+const rpmChart = new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: [],
+    datasets: [{
+      label: 'RPM',
+      data: [],
+      borderColor: '#d70000',
+      backgroundColor: 'rgba(215, 0, 0, 0.1)',
+      fill: true,
+      tension: 0.4
+    }]
+  },
+  options: {
+    responsive: true,
+    scales: {
+      x: { grid: { display: true, drawBorder: true }, ticks: { display: false }, title: { display: true, text: 'Time' } },
+      y: { grid: { display: true, drawBorder: true }, ticks: { display: false }, title: { display: true, text: 'RPM' } }
+    },
+    plugins: { legend: { display: false }, tooltip: { enabled: false } }
+  }
+});
+
 let userId = null;
-let devices = [];
+let deviceId = null;
 
 document.getElementById('login-form').addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -7,7 +31,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
   const password = document.getElementById('password').value;
 
   try {
-    const response = await fetch('https://exciting-amusing-stork.glitch.me//login', {
+    const response = await fetch('https://exciting-amusing-stork.glitch.me/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })
@@ -17,23 +41,21 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
       throw new Error('Invalid credentials');
     }
     const data = await response.json();
-    userId = data.userId; // Set userId
-    devices = data.devices;
+    userId = data.userId;
+    deviceId = data.devices[0]; // Single device per farmer
     document.getElementById('login-container').style.display = 'none';
     document.getElementById('rpm-container').style.display = 'block';
-    const deviceSelect = document.getElementById('device-select');
-    deviceSelect.innerHTML = devices.map(device => '<option value="${device}">${device}</option>').join('');
-    fetchRPM(devices[0]); // Load first device's data
+    fetchRPM(); // Fetch data for the single device
   } catch (error) {
     console.error('Login error:', error);
-    alert('Invalid username or password');
+    alert('अमान्य उपयोगकर्ता नाम या पासवर्ड'); // Hindi alert
   }
 });
 
-async function fetchRPM(deviceId) {
-  if (!userId) {
-    console.error('No user ID, please log in');
-    document.getElementById('current-rpm').textContent = 'Please log in';
+async function fetchRPM() {
+  if (!userId || !deviceId) {
+    console.error('No user ID or device ID, please log in');
+    document.getElementById('current-rpm').textContent = 'कृपया लॉगिन करें'; // Hindi message
     return;
   }
   try {
@@ -53,17 +75,13 @@ async function fetchRPM(deviceId) {
     rpmChart.update();
   } catch (error) {
     console.error('Error fetching RPM data:', error);
-    document.getElementById('current-rpm').textContent = 'Error';
+    document.getElementById('current-rpm').textContent = 'त्रुटि'; // Hindi error
   }
 }
 
+// Periodic update
 setInterval(() => {
-  const selectedDevice = document.getElementById('device-select').value;
-  if (selectedDevice && userId) {
-    fetchRPM(selectedDevice);
+  if (userId && deviceId) {
+    fetchRPM();
   }
 }, 5000);
-
-document.getElementById('device-select').addEventListener('change', (e) => {
-  fetchRPM(e.target.value);
-});
