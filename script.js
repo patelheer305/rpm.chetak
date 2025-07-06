@@ -15,8 +15,8 @@ const rpmChart = new Chart(ctx, {
   options: {
     responsive: true,
     scales: {
-      x: { grid: { display: true, drawBorder: true }, ticks: { display: false }, title: { display: true, text: 'Time' } },
-      y: { grid: { display: true, drawBorder: true }, ticks: { display: false }, title: { display: true, text: 'RPM' } }
+      x: { grid: { display: true, drawBorder: true }, title: { display: true, text: 'Seconds Ago' } },
+      y: { grid: { display: true, drawBorder: true }, title: { display: true, text: 'RPM' } }
     },
     plugins: { legend: { display: false }, tooltip: { enabled: false } }
   }
@@ -31,7 +31,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
   const password = document.getElementById('password').value;
 
   try {
-    const response = await fetch('https://exciting-amusing-stork.glitch.me/login', {
+    const response = await fetch('https://exciting-amusing-stork.glitch.me/login', { // Replace with actual Glitch URL
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })
@@ -43,7 +43,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
       throw new Error(`Login failed: ${data.error || 'Unknown error'}`);
     }
     userId = data.userId;
-    deviceId = data.devices && data.devices[0]; // Single device per farmer
+    deviceId = data.devices && data.devices[0];
     console.log('User ID:', userId, 'Device ID:', deviceId);
     if (!userId || !deviceId) {
       throw new Error('Missing userId or deviceId in login response');
@@ -74,18 +74,28 @@ async function fetchRPM() {
     }
     const data = await response.json();
     console.log('Received data:', data);
-    if (data.length === 0) {
-      console.warn('No RPM data available for this device');
+    
+    // Filter data to last 1 minute (60 seconds)
+    const oneMinuteAgo = new Date(Date.now() - 60 * 1000);
+    const recentData = data.filter(d => new Date(d.timestamp) >= oneMinuteAgo);
+    
+    if (recentData.length === 0) {
+      console.warn('No RPM data available for the last minute');
       document.getElementById('current-rpm').textContent = 'कोई डेटा उपलब्ध नहीं';
       rpmChart.data.labels = [];
       rpmChart.data.datasets[0].data = [];
       rpmChart.update();
       return;
     }
-    const latestRPM = data[data.length - 1].rpm;
+    
+    // Display latest RPM
+    const latestRPM = recentData[recentData.length - 1].rpm;
     document.getElementById('current-rpm').textContent = `${latestRPM} RPM`;
-    rpmChart.data.labels = data.map(d => '');
-    rpmChart.data.datasets[0].data = data.map(d => parseFloat(d.rpm));
+    
+    // Generate labels as seconds ago (e.g., 0s, 5s, 10s)
+    const now = Date.now();
+    rpmChart.data.labels = recentData.map(d => Math.floor((now - new Date(d.timestamp)) / 1000) + 's');
+    rpmChart.data.datasets[0].data = recentData.map(d => parseFloat(d.rpm));
     rpmChart.update();
   } catch (error) {
     console.error('Error fetching RPM data:', error);
