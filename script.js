@@ -37,13 +37,17 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
       body: JSON.stringify({ username, password })
     });
     console.log('Login response status:', response.status);
-    if (!response.ok) {
-      throw new Error('Invalid credentials');
-    }
     const data = await response.json();
+    console.log('Login response data:', data);
+    if (!response.ok) {
+      throw new Error(`Login failed: ${data.error || 'Unknown error'}`);
+    }
     userId = data.userId;
-    deviceId = data.devices[0]; // Single device per farmer
+    deviceId = data.devices && data.devices[0]; // Single device per farmer
     console.log('User ID:', userId, 'Device ID:', deviceId);
+    if (!userId || !deviceId) {
+      throw new Error('Missing userId or deviceId in login response');
+    }
     document.getElementById('login-container').style.display = 'none';
     document.getElementById('rpm-container').style.display = 'block';
     fetchRPM();
@@ -60,13 +64,13 @@ async function fetchRPM() {
     return;
   }
   try {
-    const url = 'https://exciting-amusing-stork.glitch.me/rpm?userId=${userId}&deviceId=${deviceId}';
+    const url = `https://exciting-amusing-stork.glitch.me/rpm?userId=${userId}&deviceId=${deviceId}`;
     console.log('Fetching data from:', url);
     const response = await fetch(url);
     console.log('Response status:', response.status);
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error('HTTP error! Status: ${response.status}, Message: ${errorText}');
+      throw new Error(`HTTP error! Status: ${response.status}, Message: ${errorText}`);
     }
     const data = await response.json();
     console.log('Received data:', data);
@@ -79,7 +83,7 @@ async function fetchRPM() {
       return;
     }
     const latestRPM = data[data.length - 1].rpm;
-    document.getElementById('current-rpm').textContent = '${latestRPM} RPM';
+    document.getElementById('current-rpm').textContent = `${latestRPM} RPM`;
     rpmChart.data.labels = data.map(d => '');
     rpmChart.data.datasets[0].data = data.map(d => parseFloat(d.rpm));
     rpmChart.update();
