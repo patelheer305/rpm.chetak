@@ -31,7 +31,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
   const password = document.getElementById('password').value;
 
   try {
-    const response = await fetch('https://exciting-amusing-stork.glitch.me/login', { // Replace with actual Glitch URL
+    const response = await fetch('https://chetak-backend-dber.vercel.app/login', { // Replace with actual Glitch URL
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })
@@ -64,7 +64,7 @@ async function fetchRPM() {
     return;
   }
   try {
-    const url = `https://exciting-amusing-stork.glitch.me/rpm?userId=${userId}&deviceId=${deviceId}`;
+    const url = `https://chetak-backend-dber.vercel.app/rpm?userId=${userId}&deviceId=${deviceId}`;
     console.log('Fetching data from:', url);
     const response = await fetch(url);
     console.log('Response status:', response.status);
