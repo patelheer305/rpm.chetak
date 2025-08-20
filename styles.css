@@ -113,3 +113,84 @@ main {
     padding: 0 10px;
   }
 }
+.tabs {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.tab {
+  padding: 10px 20px;
+  cursor: pointer;
+  background: #f0f0f9;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.tab.active {
+  background: #d70000;
+  color: white;
+}
+
+.fan-tab {
+  display: none;
+}
+
+.rotor-section, .fan-section {
+  display: none;
+}
+
+.rotor-section.active, .fan-section.active {
+  display: block;
+}
+
+.gauge-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+.gauge {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  margin: 0 auto;
+}
+
+.gauge-value {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+@media (max-width: 600px) {
+  .tab {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
+
+  .gauge-grid {
+    gap: 5px;
+    max-width: 300px;
+  }
+
+  .gauge {
+    width: 140px;
+    height: 140px;
+  }
+
+  .gauge-value {
+    font-size: 16px;
+  }
+
+  .chart-container canvas {
+    height: 200px !important;
+  }
+}
