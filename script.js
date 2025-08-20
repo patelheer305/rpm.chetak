@@ -15,15 +15,45 @@ const rpmChart = new Chart(ctx, {
   options: {
     responsive: true,
     scales: {
-      x: { grid: { display: true, drawBorder: true }, title: { display: true, text: 'Seconds Ago' } },
-      y: { grid: { display: true, drawBorder: true }, title: { display: true, text: 'RPM' } }
+      x: { grid: { display: true, drawBorder: true }, ticks: { display: false }, title: { display: true, text: 'Seconds Ago' } },
+      y: { grid: { display: true, drawBorder: true }, ticks: { display: false }, title: { display: true, text: 'RPM' } }
     },
     plugins: { legend: { display: false }, tooltip: { enabled: false } }
   }
 });
 
+const gaugeOptions = {
+  angle: 0.15,
+  lineWidth: 0.44,
+  radiusScale: 1,
+  pointer: { length: 0.6, strokeWidth: 0.035, color: '#000000' },
+  limitMax: true,
+  limitMin: true,
+  strokeColor: '#E0E0E0',
+  generateGradient: true,
+  highDpiSupport: true,
+  staticZones: [
+    { strokeStyle: "#FF0000", min: 0, max: 200 },
+    { strokeStyle: "#FFFF00", min: 200, max: 600 },
+    { strokeStyle: "#00FF00", min: 600, max: 1000 }
+  ],
+  staticLabels: { font: "10px sans-serif", labels: [0, 200, 600, 1000], fractionDigits: 0 }
+};
+
+const fanGauge1 = new Gauge(document.getElementById('fanGauge1')).setOptions({ ...gaugeOptions, colorStart: '#0000d7', colorStop: '#0000d7' });
+const fanGauge2 = new Gauge(document.getElementById('fanGauge2')).setOptions({ ...gaugeOptions, colorStart: '#00d700', colorStop: '#00d700' });
+const fanGauge3 = new Gauge(document.getElementById('fanGauge3')).setOptions({ ...gaugeOptions, colorStart: '#d700d7', colorStop: '#d700d7' });
+const fanGauge4 = new Gauge(document.getElementById('fanGauge4')).setOptions({ ...gaugeOptions, colorStart: '#d7d700', colorStop: '#d7d700' });
+
+[fanGauge1, fanGauge2, fanGauge3, fanGauge4].forEach(gauge => {
+  gauge.maxValue = 1000; // Max RPM
+  gauge.setMinValue(0);
+  gauge.set(0);
+});
+
 let userId = null;
 let deviceId = null;
+let isDualShaft = false;
 
 document.getElementById('login-form').addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -31,7 +61,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
   const password = document.getElementById('password').value;
 
   try {
-    const response = await fetch('https://chetak-backend.vercel.app/login', { // Replace with actual Glitch URL
+    const response = await fetch('https://chetak-backend.vercel.app/login', { // Replace with confirmed Vercel URL
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })
@@ -108,4 +138,122 @@ setInterval(() => {
     fetchRPM();
   }
 }, 2000);
+</DOCUMENT>
 
+<DOCUMENT filename="styles.css">
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background-color: #f4f4f9;
+  color: #333;
+  line-height: 1.6;
+}
+
+header {
+  background-color: #d70000;
+  color: white;
+  text-align: center;
+  padding: 1rem;
+}
+
+header .logo {
+  display: block;
+  margin: 0 auto 10px;
+  max-width: 150px;
+  height: auto;
+}
+
+header h1 {
+  font-size: 2rem;
+}
+
+main {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 0 20px;
+}
+
+#login-container {
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+#login-container input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+#login-container button {
+  width: 100%;
+  padding: 10px;
+  background-color: #d70000;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+#login-container button:hover {
+  background-color: #b30000;
+}
+
+.rpm-display {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.rpm-display h2 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.rpm-display p {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #d70000;
+  background-color: white;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.chart-container {
+  padding: 20px;
+}
+
+.chart-container h2 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  header h1 {
+    font-size: 1.5rem;
+  }
+
+  header .logo {
+    max-width: 100px;
+  }
+
+  .rpm-display p {
+    font-size: 1.5rem;
+  }
+
+  main {
+    padding: 0 10px;
+  }
+}
+</DOCUMENT>
