@@ -1,74 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RPM Monitoring</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gaugeJS@1.0.0/dist/gauge.min.js"></script>
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin: 0; padding: 10px; }
-        #login-container, #rpm-container { margin: 10px; }
-        .tabs { display: flex; justify-content: center; gap: 5px; margin: 10px 0; }
-        .tab { padding: 8px 16px; cursor: pointer; background: #f0f0f0; border-radius: 5px; font-size: 14px; }
-        .tab.active { background: #d70000; color: #fff; }
-        .fan-tab { display: none; }
-        .rotor-section { display: none; }
-        .fan-section { display: none; }
-        .rotor-section.active, .fan-section.active { display: block; }
-        .rpm-label { font-size: 16px; color: #333; margin: 10px 0; }
-        canvas#rpmChart { max-width: 320px; max-height: 200px; margin: 0 auto; }
-        .gauge-container { display: grid; grid-template-columns: 150px 150px; gap: 10px; justify-content: center; margin: 10px auto; max-width: 320px; }
-        .gauge { position: relative; width: 150px; height: 150px; }
-        .gauge-value { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 18px; font-weight: bold; color: #333; }
-        @media (max-width: 360px) {
-            .gauge-container { grid-template-columns: 140px 140px; }
-            .gauge { width: 140px; height: 140px; }
-            .tab { padding: 6px 12px; font-size: 12px; }
-            canvas#rpmChart { max-width: 300px; }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marshal Chetak</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <header>
+    <img src="Chetak.png" alt="Logo" class="logo">
+    <h1>मार्शल चेतक</h1>
+  </header>
+  <main>
     <div id="login-container">
-        <h2>Login</h2>
-        <form id="login-form">
-            <input type="text" id="username" placeholder="Username" required><br><br>
-            <input type="password" id="password" placeholder="Password" type="password" required><br><br>
-            <button type="submit">Login</button>
-        </form>
+      <form id="login-form">
+        <input type="text" id="username" placeholder="उपयोगकर्ता नाम" required>
+        <input type="password" id="password" placeholder="पासवर्ड" required>
+        <button type="submit">लॉगिन</button>
+      </form>
     </div>
     <div id="rpm-container" style="display: none;">
-        <h2>आरपीएम मॉनिटर</h2>
-        <div class="tabs">
-            <div class="tab active" data-target="rotor">रोटोर शाफ्ट</div>
-            <div class="tab fan-tab" data-target="fan">फैन शाफ्ट (चार ग्रोव)</div>
-        </div>
-        <div class="rotor-section active">
-            <div class="rpm-label">रोटोर शाफ्ट RPM: <span id="rotor-rpm">0</span></div>
-            <canvas id="rpmChart"></canvas>
-        </div>
-        <div class="fan-section">
-            <div class="gauge-container">
-                <div class="gauge">
-                    <canvas id="fan1Gauge"></canvas>
-                    <div class="gauge-value" id="fan1-rpm">0</div>
-                </div>
-                <div class="gauge">
-                    <canvas id="fan2Gauge"></canvas>
-                    <div class="gauge-value" id="fan2-rpm">0</div>
-                </div>
-                <div class="gauge">
-                    <canvas id="fan3Gauge"></canvas>
-                    <div class="gauge-value" id="fan3-rpm">0</div>
-                </div>
-                <div class="gauge">
-                    <canvas id="fan4Gauge"></canvas>
-                    <div class="gauge-value" id="fan4-rpm">0</div>
-                </div>
-            </div>
-        </div>
+      <section class="rpm-display">
+        <h2>वर्तमान RPM</h2>
+        <p id="current-rpm">Loading...</p>
+      </section>
+      <section class="chart-container">
+        <h2>RPM प्रवृत्ति</h2>
+        <canvas id="rpmChart"></canvas>
+      </section>
     </div>
-    <script src="script.js"></script>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
