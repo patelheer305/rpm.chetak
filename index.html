@@ -19,16 +19,35 @@
         <button type="submit">लॉगिन</button>
       </form>
     </div>
-    <div id="rpm-container" style="display: none;">
-      <section class="rpm-display">
-        <h2>वर्तमान RPM</h2>
-        <p id="current-rpm">Loading...</p>
-      </section>
-      <section class="chart-container">
-        <h2>RPM प्रवृत्ति</h2>
-        <canvas id="rpmChart"></canvas>
-      </section>
+<div id="rpm-container" style="display: none;">
+  <h2>आरपीएम मॉनिटर</h2>
+  <select id="rpm-select" style="display: none;">
+    <option value="rotor">रोटोर शाफ्ट RPM</option>
+    <option value="fan">फैन शाफ्ट RPM (चार ग्रोव पुली)</option>
+  </select>
+  <h3>वर्तमान RPM: <span id="current-rpm">Loading...</span></h3>
+  <div id="rotor-chart-container" style="display: none;">
+    <canvas id="rpmChart"></canvas>
+  </div>
+  <div id="fan-gauge-container" style="display: none;" class="gauge-grid">
+    <div class="gauge">
+      <canvas id="fanGauge1"></canvas>
+      <div class="gauge-value" id="fanGaugeValue1">0</div>
     </div>
+    <div class="gauge">
+      <canvas id="fanGauge2"></canvas>
+      <div class="gauge-value" id="fanGaugeValue2">0</div>
+    </div>
+    <div class="gauge">
+      <canvas id="fanGauge3"></canvas>
+      <div class="gauge-value" id="fanGaugeValue3">0</div>
+    </div>
+    <div class="gauge">
+      <canvas id="fanGauge4"></canvas>
+      <div class="gauge-value" id="fanGaugeValue4">0</div>
+    </div>
+  </div>
+</div>
   </main>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="script.js"></script>
